@@ -2,9 +2,11 @@
 
 // import Head from "next/head";
 import { ChangeEvent, useState } from "react";
+
 // import { Heroicon } from "heroicons";
 import { ArrowsPointingOutIcon } from "@heroicons/react/24/solid";
-import { get } from "http";
+
+import Presets from "./components/presets";
 
 /**
  * Given a temperature (in Kelvin), estimate an RGB equivalent
@@ -80,19 +82,50 @@ export function getEspectre(min: number, max: number, step: number) {
 }
 
 export default function Home() {
-  // let kelvin = 2200;
-  // const [kelvin, setKelvin] = useState(6600);
-  const [kelvin, setKelvin] = useState(6600);
-  const [rgb, setRGB] = useState(getRGBFromTemperature(kelvin));
-  const [hex, setHex] = useState(getHexFromRGB(rgb));
-
   const minKelvin = 0;
   const maxKelvin = 15000;
   const extraKelvin = 40000;
   const stepKelvin = 100;
 
+  const [kelvin, setKelvin] = useState((maxKelvin - minKelvin) / 2);
+  const [rgb, setRGB] = useState(getRGBFromTemperature(kelvin));
+  const [hex, setHex] = useState(getHexFromRGB(rgb));
+
   const handleChange = (event: any) => {
     setKelvin(event.target.value);
+  };
+
+  const fullscreen = () => {
+    var isInFullScreen =
+      (document.fullscreenElement && document.fullscreenElement !== null) ||
+      (document.webkitFullscreenElement &&
+        document.webkitFullscreenElement !== null) ||
+      (document.mozFullScreenElement &&
+        document.mozFullScreenElement !== null) ||
+      (document.msFullscreenElement && document.msFullscreenElement !== null);
+
+    var docElm = document.documentElement;
+    if (!isInFullScreen) {
+      if (docElm.requestFullscreen) {
+        docElm.requestFullscreen();
+      } else if (docElm.mozRequestFullScreen) {
+        docElm.mozRequestFullScreen();
+      } else if (docElm.webkitRequestFullScreen) {
+        docElm.webkitRequestFullScreen();
+      } else if (docElm.msRequestFullscreen) {
+        docElm.msRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
   };
 
   return (
@@ -106,6 +139,7 @@ export default function Home() {
           {/* Color */}
           <div className="basis-1/2 col-span-2">
             <div
+              id="color"
               className="flex justify-end items-end h-64 w-full p-2 mb-4 rounded-lg"
               style={{
                 backgroundColor: `rgb(${getRGBFromTemperature(kelvin).r}, ${
@@ -114,9 +148,13 @@ export default function Home() {
               }}
             >
               {/* fullscreen icon */}
-              <button className="bg-black bg-opacity-60 hover:bg-black rounded-full h-8 w-8 p-1.5">
+              <button
+                className="bg-black bg-opacity-60 hover:bg-black rounded-full h-8 w-8 p-1.5"
+                onClick={fullscreen}
+              >
                 <ArrowsPointingOutIcon
                   style={{
+                    opacity: 0.8,
                     color: `rgb(${getRGBFromTemperature(kelvin).r}, ${
                       getRGBFromTemperature(kelvin).g
                     }, ${getRGBFromTemperature(kelvin).b})`,
@@ -124,6 +162,7 @@ export default function Home() {
                 />
               </button>
             </div>
+
             <div className="flex flex-col space-y-2">
               <div className="flex justify-between">
                 <div>Kelvin</div>
@@ -210,6 +249,7 @@ export default function Home() {
                 <div className="flex-none">button</div>
               </div>
             </div>
+            {/* <Presets></Presets> */}
           </div>
         </div>
         <hr />
@@ -234,12 +274,6 @@ export default function Home() {
           </button>
         </div>
       </div>
-      <div className="flex w-full border rounded-lg p-4">
-        <h1>fonte:</h1>
-        <a href="https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html">
-          tannerhelland.com
-        </a>
-      </div>
       <div
         className="h-32 w-full rounded-lg"
         style={{
@@ -253,6 +287,16 @@ export default function Home() {
           )})`,
         }}
       ></div>
+      <div className="flex flex-col w-full border rounded-lg p-4">
+        <h1 className="text-2xl font-bold">Espectro de cores</h1>
+        <h1 className="text-2xl font-bold">Formula</h1>
+        <div>oi</div>
+
+        <h1>fonte:</h1>
+        <a href="https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html">
+          tannerhelland.com
+        </a>
+      </div>
     </main>
   );
 }
