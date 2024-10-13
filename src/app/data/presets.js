@@ -1,8 +1,4 @@
-const presets = [
-  {
-    name: "Candle",
-    kelvin: 1900,
-  },
+let presets = [
   {
     name: "Candle",
     kelvin: 1900,

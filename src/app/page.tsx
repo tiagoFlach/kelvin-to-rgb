@@ -249,7 +249,7 @@ export default function Home() {
                 <div className="flex-none">button</div>
               </div>
             </div>
-            {/* <Presets></Presets> */}
+            <Presets />
           </div>
         </div>
         <hr />
