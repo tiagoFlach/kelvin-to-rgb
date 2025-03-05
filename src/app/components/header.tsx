@@ -17,16 +17,16 @@ export default function Header() {
         <h1 className="text-xl">Kelvin to RGB</h1>
         <nav className="flex items-center">
           <ul className="flex space-x-2">
-            <li className="rounded p-2 hover:bg-gray-950">
+            <li className="rounded-sm p-2 hover:bg-gray-950">
               <a href="/">Home</a>
             </li>
-            <li className="rounded p-2 hover:bg-gray-950">
+            <li className="rounded-sm p-2 hover:bg-gray-950">
               <a href="/presets">Presets</a>
             </li>
-            <li className="rounded p-2 hover:bg-gray-950">
+            <li className="rounded-sm p-2 hover:bg-gray-950">
               <button>{getToggleIcon()}</button>
             </li>
-            <li className="rounded p-2 hover:bg-gray-950">
+            <li className="rounded-sm p-2 hover:bg-gray-950">
               <a href="https://github.com/tiagoFlach/kelvin-to-rgb">
                 {getToggleIcon()}
               </a>
