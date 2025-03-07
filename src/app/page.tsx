@@ -135,7 +135,7 @@ export default function Home() {
     <div className="space-y-4">
       <Card>
         <CardContent>
-          <div className="flex flex-col md:flex-row space-x-4 space-y-8">
+          <div className="flex flex-col space-y-8 md:flex-row md:space-x-4">
             <div className="flex-1 flex-col space-y-4">
               <div
                 id="color"
