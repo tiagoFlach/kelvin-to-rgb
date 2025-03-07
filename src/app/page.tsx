@@ -1,12 +1,18 @@
 "use client";
 
-// import Head from "next/head";
-import { ChangeEvent, useState } from "react";
-
-// import { Heroicon } from "heroicons";
-import { ArrowsPointingOutIcon } from "@heroicons/react/24/solid";
-
-import Presets from "./components/presets";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Expand } from "lucide-react";
+import Link from "next/link";
+import React, { useState } from "react";
 
 /**
  * Given a temperature (in Kelvin), estimate an RGB equivalent
@@ -15,11 +21,11 @@ import Presets from "./components/presets";
  * @returns {{r:number, g:number, b:number}} - RGB channel intensities (0-255)
  * @description Ported from: http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
  */
-export function getRGBFromTemperature(kelvin: number) {
+function getRGBFromTemperature(kelvin: number) {
   // Temperature is in Kelvin
-  let temperature = kelvin / 100;
+  const temperature = kelvin / 100;
   let r, g, b;
-  let clamp = (num: number, min: number, max: number) =>
+  const clamp = (num: number, min: number, max: number) =>
     num < min ? min : num > max ? max : num;
 
   if (temperature <= 66) {
@@ -50,7 +56,7 @@ export function getRGBFromTemperature(kelvin: number) {
   return { r, g, b };
 }
 
-export function getHexFromRGB(rgb: any) {
+function getHexFromRGB(rgb: { r: number; g: number; b: number }) {
   let r = rgb.r.toString(16);
   let g = rgb.g.toString(16);
   let b = rgb.b.toString(16);
@@ -62,241 +68,182 @@ export function getHexFromRGB(rgb: any) {
   return "#" + r + g + b;
 }
 
-export function getEspectre(min: number, max: number, step: number) {
-  let espectre = [];
+function getSpectre(min: number, max: number, step: number) {
+  const spectre = [];
 
   for (let i = min; i <= max; i += step) {
-    let color =
-      "rgb(" +
-      getRGBFromTemperature(i).r +
-      "," +
-      getRGBFromTemperature(i).g +
-      "," +
-      getRGBFromTemperature(i).b +
-      ")";
-
-    espectre.push(color);
+    const color = getRGBFromTemperature(i);
+    spectre.push(`rgb(${color.r}, ${color.g}, ${color.b})`);
   }
 
-  return espectre;
+  return spectre;
 }
+
+const presets = [
+  {
+    title: "Candle",
+    value_min: 1900,
+    value_max: 2000,
+    value_default: 1950,
+  },
+];
 
 export default function Home() {
   const minKelvin = 0;
   const maxKelvin = 15000;
-  const extraKelvin = 40000;
+  // const extraKelvin = 40000;
   const stepKelvin = 100;
 
   const [kelvin, setKelvin] = useState((maxKelvin - minKelvin) / 2);
   const [rgb, setRGB] = useState(getRGBFromTemperature(kelvin));
   const [hex, setHex] = useState(getHexFromRGB(rgb));
 
-  const handleChange = (event: any) => {
-    setKelvin(event.target.value);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setKelvin(Number(event.target.value));
+    updateValues();
   };
 
-  const fullscreen = () => {
-    var isInFullScreen =
-      (document.fullscreenElement && document.fullscreenElement !== null) ||
-      (document.webkitFullscreenElement &&
-        document.webkitFullscreenElement !== null) ||
-      (document.mozFullScreenElement &&
-        document.mozFullScreenElement !== null) ||
-      (document.msFullscreenElement && document.msFullscreenElement !== null);
-
-    var docElm = document.documentElement;
-    if (!isInFullScreen) {
-      if (docElm.requestFullscreen) {
-        docElm.requestFullscreen();
-      } else if (docElm.mozRequestFullScreen) {
-        docElm.mozRequestFullScreen();
-      } else if (docElm.webkitRequestFullScreen) {
-        docElm.webkitRequestFullScreen();
-      } else if (docElm.msRequestFullscreen) {
-        docElm.msRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
-    }
+  const updateValues = () => {
+    setRGB(getRGBFromTemperature(kelvin));
+    setHex(getHexFromRGB(rgb));
   };
+
+  const data = [
+    {
+      title: "Kelvin",
+      value: kelvin,
+    },
+    {
+      title: "RGB",
+      value: `(${rgb.r}, ${rgb.g}, ${rgb.b})`,
+    },
+    {
+      title: "HEX",
+      value: hex,
+    },
+  ];
 
   return (
-    <main className="container mx-auto my-16 space-y-4">
-      <div className="w-full mb-12">
-        <h1 className="text-4xl font-bold text-center">Kelvin to RGB</h1>
-        <p className="text-center">Convert Kelvin color temperature to RGB </p>
-      </div>
-      <div className="w-full flex flex-col border rounded-lg space-y-4 p-4 border-cyan-50">
-        <div className="flex flex-row space-x-4">
-          {/* Color */}
-          <div className="basis-1/2 col-span-2">
+    <div className=" space-y-4">
+      <Card>
+        <CardContent>
+          <div className="grid grid-flow-col grid-rows-2 gap-4">
             <div
               id="color"
-              className="flex justify-end items-end h-64 w-full p-2 mb-4 rounded-lg"
+              className="bg-muted flex group justify-end items-end h-64 p-3 w-full rounded-lg"
               style={{
-                backgroundColor: `rgb(${getRGBFromTemperature(kelvin).r}, ${
-                  getRGBFromTemperature(kelvin).g
-                }, ${getRGBFromTemperature(kelvin).b})`,
+                backgroundColor: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
               }}
+              // onMouseEnter={() => showButton()}
             >
               {/* fullscreen icon */}
-              <button
-                className="bg-black bg-opacity-60 hover:bg-black rounded-full h-8 w-8 p-1.5"
-                onClick={fullscreen}
+              <Button
+                variant="secondary"
+                size="icon"
+                // onClick={fullscreen}
+                // onClick={expand("color")}
+                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-full"
               >
-                <ArrowsPointingOutIcon
-                  style={{
-                    opacity: 0.8,
-                    color: `rgb(${getRGBFromTemperature(kelvin).r}, ${
-                      getRGBFromTemperature(kelvin).g
-                    }, ${getRGBFromTemperature(kelvin).b})`,
-                  }}
-                />
-              </button>
+                <Expand />
+              </Button>
             </div>
 
-            <div className="flex flex-col space-y-2">
-              <div className="flex justify-between">
-                <div>Kelvin</div>
-                <div>{kelvin}</div>
-              </div>
-              <div className="flex justify-between">
-                <div>RGB</div>
-                <div>
-                  ({getRGBFromTemperature(kelvin).r},{" "}
-                  {getRGBFromTemperature(kelvin).g},{" "}
-                  {getRGBFromTemperature(kelvin).b})
+            <div className="bg-muted">
+              <Label htmlFor="default-range">Default range</Label>
+              <div className="flex flex-row space-x-4">
+                <div className="flex-1">
+                  <div className="flex flex-col">
+                    <Input
+                      type="range"
+                      id="default-range"
+                      min={minKelvin}
+                      max={maxKelvin}
+                      step={stepKelvin}
+                      value={kelvin}
+                      onChange={handleChange}
+                      className="w-full h-2 rounded-lg appearance-none bg-muted"
+                    />
+                    <div className="flex flex-row justify-between text-sm">
+                      <span className="text-muted-foreground">{minKelvin}</span>
+                      <span className="text-muted-foreground">
+                        {minKelvin + (maxKelvin - minKelvin) / 3}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {minKelvin + ((maxKelvin - minKelvin) / 3) * 2}
+                      </span>
+                      <span className="text-muted-foreground">{maxKelvin}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-none">
+                  <Input
+                    type="number"
+                    placeholder="Kelvin"
+                    min={minKelvin}
+                    max={maxKelvin}
+                    step={stepKelvin}
+                    value={kelvin}
+                    onChange={handleChange}
+                  />
                 </div>
               </div>
-              <div className="flex justify-between">
-                <div>HEX</div>
-                <div>{getHexFromRGB(rgb)}</div>
-              </div>
             </div>
-          </div>
-          {/* Color Setting */}
-          <div className="basis-1/2 flex flex-col space-y-4">
-            <div>
-              <input
-                type="number"
-                className="p-2 border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                placeholder="Kelvin"
-                min={minKelvin}
-                max={maxKelvin}
-                step={stepKelvin}
-                value={kelvin}
-                onChange={handleChange}
-              />
 
-              <div className="relative mb-6">
-                <label
-                  htmlFor="default-range"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Default range
-                </label>
-                <input
-                  type="range"
-                  id="default-range"
-                  min={minKelvin}
-                  max={maxKelvin}
-                  step={stepKelvin}
-                  value={kelvin}
-                  onChange={handleChange}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                />
-                <span className="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">
-                  {minKelvin}
-                </span>
-                <span className="text-sm text-gray-500 dark:text-gray-400 absolute start-1/3 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">
-                  {minKelvin + (maxKelvin - minKelvin) / 3}
-                </span>
-                <span className="text-sm text-gray-500 dark:text-gray-400 absolute start-2/3 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">
-                  {minKelvin + ((maxKelvin - minKelvin) / 3) * 2}
-                </span>
-                <span className="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">
-                  {maxKelvin}
-                </span>
+            <div className="bg-muted">
+              <div className="flex flex-col space-y-2">
+                {data.map((item) => (
+                  <div key={item.title} className="flex justify-between">
+                    <span>{item.title}</span>
+                    <span>{item.value}</span>
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="flex flex-col space-y-2">
-              <div className="flex flex-row space-x-4 ">
-                <div className="flex-1">vela</div>
-                <div className="flex-none">x - x</div>
-                <div className="flex-none">button</div>
-              </div>
-              <div className="flex flex-row space-x-4 ">
-                <div className="flex-1">vela</div>
-                <div className="flex-none">x - x</div>
-                <div className="flex-none">button</div>
-              </div>
-              <div className="flex flex-row space-x-4 ">
-                <div className="flex-1">vela</div>
-                <div className="flex-none">x - x</div>
-                <div className="flex-none">button</div>
-              </div>
-              <div className="flex flex-row space-x-4 ">
-                <div className="flex-1">vela</div>
-                <div className="flex-none">x - x</div>
-                <div className="flex-none">button</div>
-              </div>
+            <div className="bg-muted">
+              {presets.map((preset) => (
+                <div key={preset.title} className="flex flex-row space-x-4">
+                  <span className="flex-1 my-auto">{preset.title}</span>
+                  <span className="flex-none my-auto">
+                    {preset.value_min} - {preset.value_max}
+                  </span>
+                  <Button
+                    variant="outline"
+                    // onClick={setKelvin(preset.value_default)}
+                  >
+                    Button
+                  </Button>
+                </div>
+              ))}
             </div>
-            <Presets />
           </div>
-        </div>
-        <hr />
-        <div className="flex flex-row text-center space-x-4">
-          <button
-            type="button"
-            className="flex-1 p-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-hidden dark:focus:ring-blue-800"
-          >
-            vela
-          </button>
-          <button
-            type="button"
-            className="flex-1 p-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-hidden dark:focus:ring-blue-800"
-          >
-            sol
-          </button>
-          <button
-            type="button"
-            className="flex-1 p-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-hidden dark:focus:ring-blue-800"
-          >
-            sol
-          </button>
-        </div>
-      </div>
-      <div
-        className="h-32 w-full rounded-lg"
+        </CardContent>
+      </Card>
+
+      <Card
+        className="border-0 h-32 w-full"
         style={{
-          backgroundColor: `rgb(${getRGBFromTemperature(kelvin).r}, ${
-            getRGBFromTemperature(kelvin).g
-          }, ${getRGBFromTemperature(kelvin).b})`,
-          backgroundImage: `linear-gradient(to right, ${getEspectre(
+          backgroundColor: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
+          backgroundImage: `linear-gradient(to right, ${getSpectre(
             minKelvin,
             maxKelvin,
             stepKelvin
           )})`,
         }}
-      ></div>
-      <div className="flex flex-col w-full border rounded-lg p-4">
-        <h1 className="text-2xl font-bold">Espectro de cores</h1>
-        <h1 className="text-2xl font-bold">Formula</h1>
-        <div>oi</div>
+      ></Card>
 
-        <h1>fonte:</h1>
-        <a href="https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html">
-          tannerhelland.com
-        </a>
-      </div>
-    </main>
+      <Card>
+        <CardHeader>
+          <CardTitle>Espectro de Cores</CardTitle>
+          <CardDescription>Origem das informações</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div>oi</div>
+          <p>fonte:</p>
+          <Link href="https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html">
+            tannerhelland.com
+          </Link>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

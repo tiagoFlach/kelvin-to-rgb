@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Navbar from "./components/navbar";
 
-// Components
-import Header from "./components/header";
-import Footer from "./components/footer";
-import Theme from "./components/theme-provider";
-
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Kelvin to RGB",
-  description: "Convert Kelvin to RGB color temperature",
+  description: "Convert Kelvin to RGB",
 };
 
 export default function RootLayout({
@@ -22,11 +21,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Theme>
-          <Header />
-          {children}
-          <Footer />
-        </Theme>
+        <main>
+          <Navbar />
+          <div className="container mt-4 mb-16 p-4 mx-auto">{children}</div>
+        </main>
       </body>
     </html>
   );
