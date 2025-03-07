@@ -9,10 +9,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+// import { Label } from "@/components/ui/label";
 import { Expand, Shrink } from "lucide-react";
 import Link from "next/link";
-import { motion } from "motion/react";
+// import { motion } from "motion/react";
 import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 
@@ -82,7 +82,7 @@ function getSpectre(min: number, max: number, step: number) {
 }
 
 function expand() {
-  const element = document.getElementById("color");
+  // const element = document.getElementById("color");
   // element.requestFullscreen();
 }
 
@@ -104,7 +104,7 @@ export default function Home() {
   const [kelvin, setKelvin] = useState((maxKelvin - minKelvin) / 2);
   const [rgb, setRGB] = useState(getRGBFromTemperature(kelvin));
   const [hex, setHex] = useState(getHexFromRGB(rgb));
-  const [expanded, setExpanded] = useState(false);
+  // const [expanded, setExpanded] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setKelvin(Number(event.target.value));
@@ -154,6 +154,7 @@ export default function Home() {
                   className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-full"
                 >
                   <Expand />
+                  <Shrink className="hidden" />
                 </Button>
               </div>
 
