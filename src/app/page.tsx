@@ -10,9 +10,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Expand } from "lucide-react";
+import { Expand, Shrink } from "lucide-react";
 import Link from "next/link";
+import { motion } from "motion/react";
 import React, { useState } from "react";
+import { Separator } from "@/components/ui/separator";
 
 /**
  * Given a temperature (in Kelvin), estimate an RGB equivalent
@@ -79,6 +81,11 @@ function getSpectre(min: number, max: number, step: number) {
   return spectre;
 }
 
+function expand() {
+  const element = document.getElementById("color");
+  // element.requestFullscreen();
+}
+
 const presets = [
   {
     title: "Candle",
@@ -97,6 +104,7 @@ export default function Home() {
   const [kelvin, setKelvin] = useState((maxKelvin - minKelvin) / 2);
   const [rgb, setRGB] = useState(getRGBFromTemperature(kelvin));
   const [hex, setHex] = useState(getHexFromRGB(rgb));
+  const [expanded, setExpanded] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setKelvin(Number(event.target.value));
@@ -124,35 +132,35 @@ export default function Home() {
   ];
 
   return (
-    <div className=" space-y-4">
+    <div className="space-y-4">
       <Card>
         <CardContent>
-          <div className="grid grid-flow-col grid-rows-2 gap-4">
-            <div
-              id="color"
-              className="bg-muted flex group justify-end items-end h-64 p-3 w-full rounded-lg"
-              style={{
-                backgroundColor: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
-              }}
-              // onMouseEnter={() => showButton()}
-            >
-              {/* fullscreen icon */}
-              <Button
-                variant="secondary"
-                size="icon"
-                // onClick={fullscreen}
-                // onClick={expand("color")}
-                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-full"
+          <div className="flex flex-col md:flex-row space-x-4 space-y-8">
+            <div className="flex-1 flex-col space-y-4">
+              <div
+                id="color"
+                className="flex group justify-end items-end h-64 p-3 w-full rounded-lg"
+                style={{
+                  backgroundColor: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
+                }}
+                // onMouseEnter={() => showButton()}
               >
-                <Expand />
-              </Button>
-            </div>
+                {/* fullscreen icon */}
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  // onClick={fullscreen}
+                  onClick={expand}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-full"
+                >
+                  <Expand />
+                </Button>
+              </div>
 
-            <div className="bg-muted">
-              <Label htmlFor="default-range">Default range</Label>
-              <div className="flex flex-row space-x-4">
-                <div className="flex-1">
-                  <div className="flex flex-col">
+              <div className="flex flex-col space-y-4">
+                {/* <Label htmlFor="default-range">Default range</Label> */}
+                <div className="flex flex-col space-y-4">
+                  <div className="flex flex-col space-y-1">
                     <Input
                       type="range"
                       id="default-range"
@@ -161,66 +169,73 @@ export default function Home() {
                       step={stepKelvin}
                       value={kelvin}
                       onChange={handleChange}
-                      className="w-full h-2 rounded-lg appearance-none bg-muted"
+                      className="w-full h-2 rounded-lg appearance-none bg-muted px-0 cursor-pointer"
                     />
-                    <div className="flex flex-row justify-between text-sm">
-                      <span className="text-muted-foreground">{minKelvin}</span>
-                      <span className="text-muted-foreground">
+                    <div className="grid grid-cols-7 text-sm text-muted-foreground px-1">
+                      <span className="col-span-1 col-start-1 text-left">
+                        {minKelvin}
+                      </span>
+                      <span className="col-span-1 -translate-x-1/7 col-start-3 text-center">
                         {minKelvin + (maxKelvin - minKelvin) / 3}
                       </span>
-                      <span className="text-muted-foreground">
+                      <span className="col-span-1 translate-x-1/7 col-start-5 text-center">
                         {minKelvin + ((maxKelvin - minKelvin) / 3) * 2}
                       </span>
-                      <span className="text-muted-foreground">{maxKelvin}</span>
+                      <span className="col-span-1 col-start-7 text-right">
+                        {maxKelvin}
+                      </span>
                     </div>
                   </div>
-                </div>
-                <div className="flex-none">
-                  <Input
-                    type="number"
-                    placeholder="Kelvin"
-                    min={minKelvin}
-                    max={maxKelvin}
-                    step={stepKelvin}
-                    value={kelvin}
-                    onChange={handleChange}
-                  />
+                  <div className="flex-none">
+                    <Input
+                      type="number"
+                      placeholder="Kelvin"
+                      min={minKelvin}
+                      max={maxKelvin}
+                      step={stepKelvin}
+                      value={kelvin}
+                      onChange={handleChange}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-muted">
+            <div className="flex-1 flex flex-col">
               <div className="flex flex-col space-y-2">
                 {data.map((item) => (
                   <div key={item.title} className="flex justify-between">
                     <span>{item.title}</span>
-                    <span>{item.value}</span>
+                    <span className="text-muted-foreground">{item.value}</span>
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="bg-muted">
-              {presets.map((preset) => (
-                <div key={preset.title} className="flex flex-row space-x-4">
-                  <span className="flex-1 my-auto">{preset.title}</span>
-                  <span className="flex-none my-auto">
-                    {preset.value_min} - {preset.value_max}
-                  </span>
-                  <Button
-                    variant="outline"
-                    // onClick={setKelvin(preset.value_default)}
-                  >
-                    Button
-                  </Button>
-                </div>
-              ))}
+
+              <Separator className="my-4" />
+
+              <div className="flex flex-col space-y-4">
+                {presets.map((preset) => (
+                  <div key={preset.title} className="flex flex-row space-x-4">
+                    <span className="flex-1 my-auto">{preset.title}</span>
+                    <span className="flex-none my-auto text-muted-foreground">
+                      {preset.value_min} - {preset.value_max}
+                    </span>
+                    <Button
+                      variant="outline"
+                      // onClick={setKelvin(preset.value_default)}
+                    >
+                      Button
+                    </Button>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
       <Card
-        className="border-0 h-32 w-full"
+        className="h-32"
         style={{
           backgroundColor: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
           backgroundImage: `linear-gradient(to right, ${getSpectre(
