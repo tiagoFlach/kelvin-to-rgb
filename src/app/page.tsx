@@ -10,11 +10,12 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 // import { Label } from "@/components/ui/label";
-import { Expand, Shrink } from "lucide-react";
+import { ArrowRight, Expand, Shrink } from "lucide-react";
 import Link from "next/link";
 // import { motion } from "motion/react";
 import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
 
 /**
  * Given a temperature (in Kelvin), estimate an RGB equivalent
@@ -86,7 +87,12 @@ function expand() {
   // element.requestFullscreen();
 }
 
-const presets = [
+const presets: {
+  title: string;
+  value_min: number;
+  value_max: number;
+  value_default: number;
+}[] = [
   {
     title: "Candle",
     value_min: 1900,
@@ -98,10 +104,11 @@ const presets = [
 export default function Home() {
   const minKelvin = 0;
   const maxKelvin = 15000;
+  const defaultKelvin = (maxKelvin - minKelvin) / 2;
   // const extraKelvin = 40000;
   const stepKelvin = 100;
 
-  const [kelvin, setKelvin] = useState((maxKelvin - minKelvin) / 2);
+  const [kelvin, setKelvin] = useState(defaultKelvin);
   const [rgb, setRGB] = useState(getRGBFromTemperature(kelvin));
   const [hex, setHex] = useState(getHexFromRGB(rgb));
   // const [expanded, setExpanded] = useState(false);
@@ -116,10 +123,10 @@ export default function Home() {
     setHex(getHexFromRGB(rgb));
   };
 
-  const data = [
+  const data: { title: string; value: string }[] = [
     {
       title: "Kelvin",
-      value: kelvin,
+      value: `${kelvin}`,
     },
     {
       title: "RGB",
@@ -133,13 +140,13 @@ export default function Home() {
 
   return (
     <div className="space-y-4">
-      <Card>
-        <CardContent>
+      <Card className="pt-2 sm:pt-6">
+        <CardContent className="px-2 sm:px-6">
           <div className="flex flex-col space-y-8 md:flex-row md:space-x-4">
             <div className="flex-1 flex-col space-y-4">
               <div
                 id="color"
-                className="flex group justify-end items-end h-64 p-3 w-full rounded-lg"
+                className="group flex h-64 w-full items-end justify-end rounded-lg p-3"
                 style={{
                   backgroundColor: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
                 }}
@@ -151,7 +158,7 @@ export default function Home() {
                   size="icon"
                   // onClick={fullscreen}
                   onClick={expand}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-full"
+                  className="rounded-full opacity-0 transition-opacity duration-200 group-hover:opacity-100"
                 >
                   <Expand />
                   <Shrink className="hidden" />
@@ -159,50 +166,50 @@ export default function Home() {
               </div>
 
               <div className="flex flex-col space-y-4">
-                {/* <Label htmlFor="default-range">Default range</Label> */}
-                <div className="flex flex-col space-y-4">
-                  <div className="flex flex-col space-y-1">
-                    <Input
-                      type="range"
-                      id="default-range"
-                      min={minKelvin}
-                      max={maxKelvin}
-                      step={stepKelvin}
-                      value={kelvin}
-                      onChange={handleChange}
-                      className="w-full h-2 rounded-lg appearance-none bg-muted px-0 cursor-pointer"
-                    />
-                    <div className="grid grid-cols-7 text-sm text-muted-foreground px-1">
-                      <span className="col-span-1 col-start-1 text-left">
-                        {minKelvin}
-                      </span>
-                      <span className="col-span-1 -translate-x-1/7 col-start-3 text-center">
-                        {minKelvin + (maxKelvin - minKelvin) / 3}
-                      </span>
-                      <span className="col-span-1 translate-x-1/7 col-start-5 text-center">
-                        {minKelvin + ((maxKelvin - minKelvin) / 3) * 2}
-                      </span>
-                      <span className="col-span-1 col-start-7 text-right">
-                        {maxKelvin}
-                      </span>
-                    </div>
+                <Label htmlFor="default-range">
+                  Select the color temperature
+                </Label>
+                <div className="flex flex-col space-y-1">
+                  <Input
+                    type="range"
+                    id="default-range"
+                    min={minKelvin}
+                    max={maxKelvin}
+                    step={stepKelvin}
+                    value={kelvin}
+                    onChange={handleChange}
+                    className="bg-muted h-2 w-full cursor-pointer appearance-none rounded-lg px-0"
+                  />
+                  <div className="text-muted-foreground grid grid-cols-7 px-1 text-sm">
+                    <span className="col-span-1 col-start-1 text-left">
+                      {minKelvin}
+                    </span>
+                    <span className="col-span-1 col-start-3 -translate-x-1/7 text-center">
+                      {minKelvin + (maxKelvin - minKelvin) / 3}
+                    </span>
+                    <span className="col-span-1 col-start-5 translate-x-1/7 text-center">
+                      {minKelvin + ((maxKelvin - minKelvin) / 3) * 2}
+                    </span>
+                    <span className="col-span-1 col-start-7 text-right">
+                      {maxKelvin}
+                    </span>
                   </div>
-                  <div className="flex-none">
-                    <Input
-                      type="number"
-                      placeholder="Kelvin"
-                      min={minKelvin}
-                      max={maxKelvin}
-                      step={stepKelvin}
-                      value={kelvin}
-                      onChange={handleChange}
-                    />
-                  </div>
+                </div>
+                <div className="flex-none">
+                  <Input
+                    type="number"
+                    placeholder="Kelvin"
+                    min={minKelvin}
+                    step={stepKelvin}
+                    value={kelvin}
+                    onChange={handleChange}
+                    className="w-full text-center"
+                  />
                 </div>
               </div>
             </div>
 
-            <div className="flex-1 flex flex-col">
+            <div className="flex flex-1 flex-col">
               <div className="flex flex-col space-y-2">
                 {data.map((item) => (
                   <div key={item.title} className="flex justify-between">
@@ -217,15 +224,16 @@ export default function Home() {
               <div className="flex flex-col space-y-4">
                 {presets.map((preset) => (
                   <div key={preset.title} className="flex flex-row space-x-4">
-                    <span className="flex-1 my-auto">{preset.title}</span>
-                    <span className="flex-none my-auto text-muted-foreground">
-                      {preset.value_min} - {preset.value_max}
+                    <span className="my-auto flex-1">{preset.title}</span>
+                    <span className="text-muted-foreground my-auto flex-none">
+                      {preset.value_min} — {preset.value_max}
                     </span>
                     <Button
                       variant="outline"
-                      // onClick={setKelvin(preset.value_default)}
+                      size="icon"
+                      // onClick={setKelvin(preset.value_min)}
                     >
-                      Button
+                      <ArrowRight />
                     </Button>
                   </div>
                 ))}
@@ -242,7 +250,7 @@ export default function Home() {
           backgroundImage: `linear-gradient(to right, ${getSpectre(
             minKelvin,
             maxKelvin,
-            stepKelvin
+            stepKelvin,
           )})`,
         }}
       ></Card>
