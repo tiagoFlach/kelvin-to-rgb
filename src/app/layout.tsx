@@ -12,7 +12,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Kelvin to RGB",
-  description: "Convert Kelvin to RGB",
+  description: "Convert Kelvin color temperature to RGB",
   keywords: ["kelvin", "rgb", "color", "temperature"],
   authors: {
     name: "Tiago Lucas Flach",

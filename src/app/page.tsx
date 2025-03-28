@@ -140,9 +140,9 @@ export default function Home() {
 
   return (
     <div className="space-y-4">
-      <Card className="pt-2 sm:pt-6">
+      <Card className="pt-2 pb-4 sm:py-6">
         <CardContent className="px-2 sm:px-6">
-          <div className="flex flex-col space-y-8 md:flex-row md:space-x-4">
+          <div className="flex flex-col space-y-8 md:flex-row md:space-y-0 md:space-x-4">
             <div className="flex-1 flex-col space-y-4">
               <div
                 id="color"
@@ -263,7 +263,10 @@ export default function Home() {
         <CardContent>
           <div>oi</div>
           <p>fonte:</p>
-          <Link href="https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html">
+          <Link
+            className="text-blue-500 hover:underline"
+            href="https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html"
+          >
             tannerhelland.com
           </Link>
         </CardContent>
