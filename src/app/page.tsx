@@ -42,7 +42,7 @@ import {
 } from "@/components/ui/table";
 
 const minKelvin: number = 0;
-const maxKelvin: number = 10000;
+const maxKelvin: number = 15000;
 const defaultKelvin: number = (maxKelvin - minKelvin) / 2;
 // const extraKelvin: number = 40000;
 const stepKelvin: number = 100;
