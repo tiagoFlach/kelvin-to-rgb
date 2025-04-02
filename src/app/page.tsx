@@ -125,8 +125,8 @@ export default function Home(): JSX.Element {
 
   return (
     <div className="space-y-4">
-      <Card className="py-3 pt-2 sm:py-6">
-        <CardContent className="flex flex-col space-y-6 px-2 sm:px-6">
+      <Card className="py-3 sm:py-6">
+        <CardContent className="flex flex-col space-y-6 px-3 sm:px-6">
           <Card
             id="color"
             className="group flex h-48 w-full items-end justify-end rounded-lg p-0"
@@ -214,10 +214,8 @@ export default function Home(): JSX.Element {
         </CardContent>
       </Card>
 
-      {/* <Card className="py-3 pt-2 sm:py-6"> */}
-      {/* <CardContent className="flex flex-col space-y-6 px-2 sm:px-6"> */}
-      <Card className="pt-4 pb-3 sm:py-6">
-        <CardHeader className="px-2 sm:px-6">
+      <Card className="py-3 sm:py-6">
+        <CardHeader className="mt-1 px-3 sm:px-6">
           <CardTitle>Presets</CardTitle>
           <CardDescription>Valores padrão</CardDescription>
         </CardHeader>
@@ -262,7 +260,7 @@ export default function Home(): JSX.Element {
           </Table>
         </CardContent>
 
-        <CardContent className="flex flex-col space-y-4 px-2 sm:px-6">
+        <CardContent className="flex flex-col space-y-4 px-3 sm:px-6">
           {presets.map((preset) => (
             <div key={preset.name} className="flex flex-row space-x-4">
               <span className="my-auto flex-1">{preset.name}</span>
@@ -289,7 +287,7 @@ export default function Home(): JSX.Element {
             </div>
           ))}
         </CardContent>
-        <CardFooter className="justify-end px-2 sm:px-6">
+        <CardFooter className="justify-end px-3 sm:px-6">
           <span className="text-right text-sm">
             Fonte:{" "}
             <Link
