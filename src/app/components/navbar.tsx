@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "../../components/ui/button";
 import { SiGithub } from "react-icons/si";
 import { ModeToggle } from "./mode-toggle";
+// import { LanguageToggle } from "./language-toggle";
 
 const Navbar = () => {
   return (
@@ -20,6 +21,8 @@ const Navbar = () => {
                 </Link>
                 <span className="sr-only">Github repo</span>
               </Button>
+
+              {/* <LanguageToggle /> */}
 
               <ModeToggle />
             </div>
