@@ -10,7 +10,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
 import {
   ArrowRight,
   Expand,
@@ -193,10 +192,16 @@ export default function Home(): JSX.Element {
                   variant="outline"
                   size="icon"
                   onClick={() => setKelvin(defaultKelvin)}
+                  title="Reset"
                 >
                   <RotateCcw />
                 </Button>
-                <Button variant="outline" size="icon" onClick={() => animate()}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => animate()}
+                  title="Animate"
+                >
                   <RefreshCcw />
                 </Button>
               </div>
@@ -215,51 +220,10 @@ export default function Home(): JSX.Element {
       </Card>
 
       <Card className="py-3 sm:py-6">
-        <CardHeader className="mt-1 px-3 sm:px-6">
-          <CardTitle>Presets</CardTitle>
+        <CardHeader className="mb-4 px-3 sm:px-6">
+          <CardTitle className="text-xl">Presets</CardTitle>
           <CardDescription>Valores padrão</CardDescription>
         </CardHeader>
-        <CardContent className="hidden">
-          <Table>
-            <TableCaption>Lista de valores.</TableCaption>
-            <TableHeader>
-              <TableRow className="text-foreground">
-                <TableHead>Name</TableHead>
-                <TableHead className="w-0">Temperature</TableHead>
-                <TableHead className="w-0"></TableHead>
-                <TableHead className="w-0"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {presets.map((preset) => (
-                <TableRow key={preset.name}>
-                  <TableCell>{preset.name}</TableCell>
-                  <TableCell className="text-right">
-                    {preset.getValue()}
-                  </TableCell>
-                  <TableCell>
-                    <div
-                      className="border-input size-9 rounded-md border"
-                      style={{
-                        backgroundColor: `${preset.getColorHex()}`,
-                      }}
-                    ></div>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => setKelvin(preset.value || 0)}
-                    >
-                      <ArrowRight />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-
         <CardContent className="flex flex-col space-y-4 px-3 sm:px-6">
           {presets.map((preset) => (
             <div key={preset.name} className="flex flex-row space-x-4">
