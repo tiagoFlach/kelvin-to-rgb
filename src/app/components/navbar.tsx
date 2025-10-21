@@ -8,7 +8,7 @@ import { ModeToggle } from "./mode-toggle";
 
 const Navbar = () => {
   return (
-    <header className="bg-background inset-x-0 top-0 isolate z-10 flex shrink-0 items-center gap-2 border-b">
+    <header className="bg-background inset-x-0 top-0 isolate z-10 mb-4 flex shrink-0 items-center gap-2 border-b">
       <div className="flex h-12 w-full items-center">
         <div className="container mx-auto">
           <div className="flex w-full justify-between px-4 sm:px-4">

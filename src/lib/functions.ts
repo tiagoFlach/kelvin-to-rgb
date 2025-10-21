@@ -5,7 +5,7 @@
  * @returns {{r:number, g:number, b:number}} - RGB channel intensities (0-255)
  * @description Ported from: http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
  */
-export function getRgbFromTemperature(kelvin: number): {
+export function getRgbFromTemperature(kelvin: number, brightness: number = 100): {
   r: number;
   g: number;
   b: number;
@@ -42,7 +42,9 @@ export function getRgbFromTemperature(kelvin: number): {
   g = clamp(Math.round(g), 0, 255);
   b = clamp(Math.round(b), 0, 255);
 
-  return { r, g, b };
+  const rgb = applyBrightnessToRgb({ r, g, b }, brightness);
+
+  return { r: rgb.r, g: rgb.g, b: rgb.b };
 }
 
 /**
@@ -67,8 +69,8 @@ export function getHexFromRgb(rgb: {
   return "#" + r + g + b;
 }
 
-export function getHexFromTemperature(kelvin: number): string {
-  return getHexFromRgb(getRgbFromTemperature(kelvin));
+export function getHexFromTemperature(kelvin: number, brightness: number = 100): string {
+  return getHexFromRgb(getRgbFromTemperature(kelvin, brightness));
 }
 
 export function getHslFromRgb(rgb: {
@@ -122,14 +124,28 @@ export function getHslFromRgb(rgb: {
   return { h, s, l };
 }
 
-export function getHslFromTemperature(kelvin: number): {
+export function getHslFromTemperature(kelvin: number, brightness: number = 100): {
   h: number;
   s: number;
   l: number;
 } {
-  return getHslFromRgb(getRgbFromTemperature(kelvin));
+  const rgb = getRgbFromTemperature(kelvin, brightness);
+
+  return getHslFromRgb(rgb);
 }
 
+export function applyBrightnessToRgb(
+  rgb: { r: number; g: number; b: number },
+  brightness: number
+): { r: number; g: number; b: number } {
+  const factor: number = brightness / 100;
+
+  return {
+    r: Math.min(255, Math.round(rgb.r * factor)),
+    g: Math.min(255, Math.round(rgb.g * factor)),
+    b: Math.min(255, Math.round(rgb.b * factor)),
+  };
+}
 
 export function getSpectre(min: number, max: number, step: number): string[] {
   console.log(min, max, step);

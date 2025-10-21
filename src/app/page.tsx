@@ -22,29 +22,25 @@ import Link from "next/link";
 import React, { JSX, useState } from "react";
 import { Label } from "@/components/ui/label";
 import {
-  getHexFromRgb,
   getHexFromTemperature,
-  getHslFromRgb,
   getHslFromTemperature,
   getRgbFromTemperature,
   getSpectre,
 } from "@/lib/functions";
 import { presets } from "./Preset";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { useMemo } from "react";
 
 const minKelvin: number = 0;
 const maxKelvin: number = 15000;
 const defaultKelvin: number = (maxKelvin - minKelvin) / 2;
 // const extraKelvin: number = 40000;
 const stepKelvin: number = 100;
+
+const minBrightness: number = 0;
+const maxBrightness: number = 200;
+const defaultBrightness: number = 100;
+const stepBrightness: number = 1;
+
 const spectre: string[] = getSpectre(minKelvin, maxKelvin, stepKelvin);
 // const spectre = getSpectre(minKelvin, maxKelvin, stepKelvin);
 
@@ -57,28 +53,28 @@ function expand(): void {
 
 export default function Home(): JSX.Element {
   const [kelvin, setKelvin] = useState(defaultKelvin);
-  const [rgb, setRgb] = useState(getRgbFromTemperature(kelvin));
-  const [hex, setHex] = useState(getHexFromTemperature(kelvin));
-  const [hsl, setHsl] = useState(getHslFromTemperature(kelvin));
+  const [brightness, setBrightness] = useState(defaultBrightness);
+
+  const { rgb, hex, hsl } = useMemo(() => {
+    const rgb = getRgbFromTemperature(kelvin, brightness);
+    const hex = getHexFromTemperature(kelvin, brightness);
+    const hsl = getHslFromTemperature(kelvin, brightness);
+    return { rgb, hex, hsl };
+  }, [kelvin, brightness]);
   // const [expanded, setExpanded] = useState(false);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleKelvinChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setKelvin(Number(event.target.value));
-    updateValues();
   };
 
-  // const setKelvin = (value: number) => {
-  //   setKelvin(value);
-  //   updateValues();
-  // };
-
-  const updateValues = () => {
-    setRgb(getRgbFromTemperature(kelvin));
-    setHex(getHexFromRgb(rgb));
-    setHsl(getHslFromRgb(rgb));
+  const handleBrightnessChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setBrightness(Number(event.target.value));
   };
 
-  function animate(): void {
+  function animateBrightness(): void {}
+  function animateKelvin(): void {
     animation = !animation;
     // let orientation: number = 1;
 
@@ -128,18 +124,18 @@ export default function Home(): JSX.Element {
         <CardContent className="flex flex-col space-y-6 px-3 sm:px-6">
           <Card
             id="color"
-            className="group flex h-48 w-full items-end justify-end rounded-lg p-0"
+            className="group flex aspect-video max-h-96 w-full items-end justify-end rounded-lg p-0"
             style={{
               backgroundColor: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
             }}
           >
             <CardContent className="p-3">
               <Button
-                variant="outline"
+                variant="secondary"
                 size="icon"
                 // onClick={fullscreen}
                 onClick={expand}
-                className="rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                className="rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-75"
               >
                 <Expand />
                 <Shrink className="hidden" />
@@ -148,64 +144,130 @@ export default function Home(): JSX.Element {
           </Card>
 
           <div className="flex flex-col gap-6 space-x-0 md:flex-row">
-            <div className="flex basis-3/5 flex-col space-y-4">
-              <Label htmlFor="default-range">
-                Select the color temperature:
-              </Label>
-              <div className="flex flex-col space-y-1">
-                <Input
-                  type="range"
-                  id="default-range"
-                  min={minKelvin}
-                  max={maxKelvin}
-                  step={stepKelvin}
-                  value={kelvin}
-                  onChange={handleChange}
-                  className="bg-muted h-2 w-full cursor-pointer appearance-none rounded-lg px-0"
-                />
-                <div className="text-muted-foreground grid grid-cols-7 px-1 text-sm">
-                  <span className="col-span-1 col-start-1 text-left">
-                    {minKelvin}
-                  </span>
-                  <span className="col-span-1 col-start-3 -translate-x-1/7 text-center">
-                    {minKelvin + (maxKelvin - minKelvin) / 3}
-                  </span>
-                  <span className="col-span-1 col-start-5 translate-x-1/7 text-center">
-                    {minKelvin + ((maxKelvin - minKelvin) / 3) * 2}
-                  </span>
-                  <span className="col-span-1 col-start-7 text-right">
-                    {maxKelvin}
-                  </span>
+            <div className="flex basis-3/5 flex-col gap-6">
+              <div className="flex flex-col space-y-4">
+                <Label htmlFor="default-range">
+                  Select the color temperature:
+                </Label>
+                <div className="flex flex-col space-y-1">
+                  <Input
+                    type="range"
+                    id="default-range"
+                    min={minKelvin}
+                    max={maxKelvin}
+                    step={stepKelvin}
+                    value={kelvin}
+                    onChange={handleKelvinChange}
+                    className="bg-muted h-2 w-full cursor-pointer appearance-none rounded-lg px-0"
+                  />
+                  <div className="text-muted-foreground grid grid-cols-7 px-1 text-sm">
+                    <span className="col-span-1 col-start-1 text-left">
+                      {minKelvin}
+                    </span>
+                    <span className="col-span-1 col-start-3 -translate-x-1/7 text-center">
+                      {minKelvin + (maxKelvin - minKelvin) / 3}
+                    </span>
+                    <span className="col-span-1 col-start-5 translate-x-1/7 text-center">
+                      {minKelvin + ((maxKelvin - minKelvin) / 3) * 2}
+                    </span>
+                    <span className="col-span-1 col-start-7 text-right">
+                      {maxKelvin}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-row gap-2">
+                  <Input
+                    type="number"
+                    placeholder="Kelvin"
+                    min={minKelvin}
+                    step={stepKelvin}
+                    value={kelvin}
+                    onChange={handleKelvinChange}
+                    className="w-full text-center"
+                  />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setKelvin(defaultKelvin)}
+                    title="Reset"
+                  >
+                    <RotateCcw />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => animateKelvin()}
+                    title="Animate"
+                  >
+                    <RefreshCcw />
+                  </Button>
                 </div>
               </div>
-              <div className="flex flex-row gap-2">
-                <Input
-                  type="number"
-                  placeholder="Kelvin"
-                  min={minKelvin}
-                  step={stepKelvin}
-                  value={kelvin}
-                  onChange={handleChange}
-                  className="w-full text-center"
-                />
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setKelvin(defaultKelvin)}
-                  title="Reset"
-                >
-                  <RotateCcw />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => animate()}
-                  title="Animate"
-                >
-                  <RefreshCcw />
-                </Button>
+
+              <div className="flex basis-3/5 flex-col space-y-4">
+                <Label htmlFor="default-range">Select the brightness:</Label>
+                <div className="flex flex-col space-y-1">
+                  <Input
+                    type="range"
+                    id="default-range"
+                    min={minBrightness}
+                    max={maxBrightness}
+                    step={stepBrightness}
+                    value={brightness}
+                    onChange={handleBrightnessChange}
+                    className="bg-muted h-2 w-full cursor-pointer appearance-none rounded-lg px-0"
+                  />
+                  <div className="text-muted-foreground grid grid-cols-5 px-1 text-sm">
+                    <span className="col-span-1 col-start-1 text-left">
+                      {minBrightness}
+                    </span>
+                    <span className="col-span-1 col-start-2 -translate-x-1/5 text-center">
+                      {minBrightness + (maxBrightness - minBrightness) / 4}
+                    </span>
+                    <span className="col-span-1 col-start-3 text-center">
+                      {minBrightness +
+                        ((maxBrightness - minBrightness) / 4) * 2}
+                    </span>
+                    <span className="col-span-1 col-start-4 translate-x-1/5 text-center">
+                      {minBrightness +
+                        ((maxBrightness - minBrightness) / 4) * 3}
+                    </span>
+                    <span className="col-span-1 col-start-5 text-right">
+                      {maxBrightness}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-row gap-2">
+                  <Input
+                    type="number"
+                    placeholder="Kelvin"
+                    min={minBrightness}
+                    step={stepBrightness}
+                    value={brightness}
+                    onChange={handleBrightnessChange}
+                    className="w-full text-center"
+                  />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setBrightness(defaultBrightness)}
+                    title="Reset"
+                  >
+                    <RotateCcw />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => animateBrightness()}
+                    title="Animate"
+                  >
+                    <RefreshCcw />
+                  </Button>
+                </div>
               </div>
             </div>
+
+            <div className="my-auto hidden h-32 w-0 border-l md:block"></div>
 
             <div className="flex basis-2/5 flex-col space-y-2">
               {data.map((item) => (
