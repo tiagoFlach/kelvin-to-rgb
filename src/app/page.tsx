@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import {
   ArrowRight,
   Expand,
+  Minus,
+  Plus,
   RefreshCcw,
   RotateCcw,
   Shrink,
@@ -29,6 +31,7 @@ import {
 } from "@/lib/functions";
 import { presets } from "./Preset";
 import { useMemo } from "react";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 const minKelvin: number = 0;
 const maxKelvin: number = 15000;
@@ -176,15 +179,45 @@ export default function Home(): JSX.Element {
                   </div>
                 </div>
                 <div className="flex flex-row gap-2">
-                  <Input
-                    type="number"
-                    placeholder="Kelvin"
-                    min={minKelvin}
-                    step={stepKelvin}
-                    value={kelvin}
-                    onChange={handleKelvinChange}
-                    className="w-full text-center"
-                  />
+                  <ButtonGroup className="w-full">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        setKelvin(
+                          kelvin - stepKelvin >= minKelvin
+                            ? kelvin - stepKelvin
+                            : minKelvin,
+                        )
+                      }
+                      title="Decrease Kelvin"
+                    >
+                      <Minus />
+                    </Button>
+                    <Input
+                      type="number"
+                      placeholder="Kelvin"
+                      min={minKelvin}
+                      step={stepKelvin}
+                      value={kelvin}
+                      onChange={handleKelvinChange}
+                      className="w-full text-center"
+                    />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        setKelvin(
+                          kelvin + stepKelvin <= maxKelvin
+                            ? kelvin + stepKelvin
+                            : maxKelvin,
+                        )
+                      }
+                      title="Increase Kelvin"
+                    >
+                      <Plus />
+                    </Button>
+                  </ButtonGroup>
                   <Button
                     variant="outline"
                     size="icon"
@@ -238,15 +271,45 @@ export default function Home(): JSX.Element {
                   </div>
                 </div>
                 <div className="flex flex-row gap-2">
-                  <Input
-                    type="number"
-                    placeholder="Kelvin"
-                    min={minBrightness}
-                    step={stepBrightness}
-                    value={brightness}
-                    onChange={handleBrightnessChange}
-                    className="w-full text-center"
-                  />
+                  <ButtonGroup className="w-full">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        setBrightness(
+                          brightness - stepBrightness >= minBrightness
+                            ? brightness - stepBrightness
+                            : minBrightness,
+                        )
+                      }
+                      title="Decrease brightness"
+                    >
+                      <Minus />
+                    </Button>
+                    <Input
+                      type="number"
+                      placeholder="Kelvin"
+                      min={minBrightness}
+                      step={stepBrightness}
+                      value={brightness}
+                      onChange={handleBrightnessChange}
+                      className="text-center"
+                    />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        setBrightness(
+                          brightness + stepBrightness <= maxBrightness
+                            ? brightness + stepBrightness
+                            : maxBrightness,
+                        )
+                      }
+                      title="Increase brightness"
+                    >
+                      <Plus />
+                    </Button>
+                  </ButtonGroup>
                   <Button
                     variant="outline"
                     size="icon"
