@@ -33,12 +33,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main>
-            <Navbar />
-            <div className="mx-auto mb-16 max-w-5xl px-2 sm:px-4">
-              {children}
-            </div>
-          </main>
+          <Navbar />
+          <div className="mx-auto mb-16 max-w-5xl px-1 sm:px-4">
+            <main>{children}</main>
+          </div>
         </ThemeProvider>
       </body>
     </html>

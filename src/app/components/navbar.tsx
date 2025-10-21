@@ -9,9 +9,9 @@ import { ModeToggle } from "./mode-toggle";
 const Navbar = () => {
   return (
     <header className="bg-background inset-x-0 top-0 isolate z-10 mb-6 flex shrink-0 items-center gap-2 border-b">
-      <div className="mx-auto flex h-16 w-full max-w-5xl items-center px-2 sm:px-4">
+      <div className="mx-auto flex h-16 w-full max-w-5xl items-center px-3 sm:px-4">
         <div className="flex w-full items-center justify-between">
-          <h1 className="my-auto font-medium">Kelvin to RGB</h1>
+          <h1 className="my-auto font-bold">Kelvin to RGB</h1>
 
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="icon">
