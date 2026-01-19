@@ -154,7 +154,7 @@ export default function Home(): JSX.Element {
                 variant="secondary"
                 size="icon"
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-75"
+                className="rounded-full"
               >
                 {isExpanded ? <Shrink /> : <Expand />}
               </Button>
