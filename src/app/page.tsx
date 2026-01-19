@@ -20,7 +20,7 @@ import {
   Shrink,
 } from "lucide-react";
 import Link from "next/link";
-// import { motion } from "motion/react";
+import { motion } from "motion/react";
 import React, { JSX, useState } from "react";
 import { Label } from "@/components/ui/label";
 import {
@@ -29,8 +29,9 @@ import {
   getRgbFromTemperature,
   getSpectre,
 } from "@/lib/functions";
+import { cn } from "@/lib/utils";
 import { presets } from "./Preset";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { ButtonGroup } from "@/components/ui/button-group";
 
 const minKelvin: number = 0;
@@ -49,14 +50,23 @@ const spectre: string[] = getSpectre(minKelvin, maxKelvin, stepKelvin);
 
 let animation: boolean = false;
 
-function expand(): void {
-  // const element = document.getElementById("color");
-  // element.requestFullscreen();
-}
+// function expand(): void {
+//   // const element = document.getElementById("color");
+//   // element.requestFullscreen();
+// }
 
 export default function Home(): JSX.Element {
   const [kelvin, setKelvin] = useState(defaultKelvin);
   const [brightness, setBrightness] = useState(defaultBrightness);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    if (isExpanded) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [isExpanded]);
 
   const { rgb, hex, hsl } = useMemo(() => {
     const rgb = getRgbFromTemperature(kelvin, brightness);
@@ -76,7 +86,7 @@ export default function Home(): JSX.Element {
     setBrightness(Number(event.target.value));
   };
 
-  function animateBrightness(): void {}
+  function animateBrightness(): void { }
   function animateKelvin(): void {
     animation = !animation;
     // let orientation: number = 1;
@@ -125,9 +135,16 @@ export default function Home(): JSX.Element {
     <div className="space-y-4">
       <Card className="py-3 sm:py-6">
         <CardContent className="flex flex-col space-y-6 px-3 sm:px-6">
-          <Card
+          <motion.div
+            layout
+            transition={{ type: "tween" }}
             id="color"
-            className="group flex aspect-video max-h-96 w-full items-end justify-end rounded-lg p-0"
+            className={cn(
+              "group flex items-end justify-end p-0 border shadow-sm",
+              isExpanded
+                ? "fixed inset-0 z-50 h-screen w-screen rounded-none"
+                : "aspect-video max-h-96 w-full rounded-lg",
+            )}
             style={{
               backgroundColor: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
             }}
@@ -136,15 +153,13 @@ export default function Home(): JSX.Element {
               <Button
                 variant="secondary"
                 size="icon"
-                // onClick={fullscreen}
-                onClick={expand}
+                onClick={() => setIsExpanded(!isExpanded)}
                 className="rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-75"
               >
-                <Expand />
-                <Shrink className="hidden" />
+                {isExpanded ? <Shrink /> : <Expand />}
               </Button>
             </CardContent>
-          </Card>
+          </motion.div>
 
           <div className="flex flex-col gap-6 space-x-0 md:flex-row">
             <div className="flex basis-3/5 flex-col gap-6">
