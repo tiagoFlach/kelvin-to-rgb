@@ -142,14 +142,14 @@ export default function Home(): JSX.Element {
             className={cn(
               "group flex items-end justify-end p-0 border shadow-sm",
               isExpanded
-                ? "fixed inset-0 z-50 h-screen w-screen rounded-none"
+                ? "fixed inset-0 z-50 h-[100dvh] w-screen rounded-none"
                 : "aspect-video max-h-96 w-full rounded-lg",
             )}
             style={{
               backgroundColor: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
             }}
           >
-            <CardContent className="p-3">
+            <CardContent className={cn("p-3", isExpanded && "pb-12 pr-6")}>
               <Button
                 variant="secondary"
                 size="icon"
